@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    color: #667eea;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #999;
+    font-size: 14px;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#prioritySelect {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background: white;
+}
+
+#prioritySelect:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#addBtn {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#addBtn:hover {
+    transform: translateY(-2px);
+}
+
+#addBtn:active {
+    transform: translateY(0);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-top: 5px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    padding: 8px 15px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.task-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+}
+
+.task-item.completed {
+    opacity: 0.6;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-text {
+    font-size: 16px;
+    color: #333;
+}
+
+.task-meta {
+    font-size: 12px;
+    color: #999;
+    margin-top: 3px;
+}
+
+.task-priority {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    width: fit-content;
+}
+
+.priority-high {
+    background: #ffcccc;
+    color: #cc0000;
+}
+
+.priority-medium {
+    background: #ffe6cc;
+    color: #ff8800;
+}
+
+.priority-low {
+    background: #ccffcc;
+    color: #00aa00;
+}
+
+.task-delete {
+    padding: 5px 10px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.task-delete:hover {
+    background: #ff5252;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    background: #f5f5f5;
+}
+
+.action-btn.danger {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.action-btn.danger:hover {
+    background: #ffe0e0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <header>
+        <h1>📝 My To-Do List</h1>
+        <p class="subtitle">Stay organized and track your tasks</p>
+    </header>
+
+    <div class="input-section">
+        <input 
+            type="text" 
+            id="taskInput" 
+            placeholder="Add a new task..."
+            autocomplete="off"
+        >
+        <select id="prioritySelect">
+            <option value="low">🟢 Low</option>
+            <option value="medium" selected>🟠 Medium</option>
+            <option value="high">🔴 High</option>
+        </select>
+        <button id="addBtn">Add</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="completedCount">0</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="remainingCount">0</div>
+            <div class="stat-label">Remaining</div>
+        </div>
+    </div>
+
+    <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+        <button class="filter-btn" onclick="filterTasks('active')">Active</button>
+        <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
+    </div>
+
+    <div class="task-list" id="taskList">
+        <div class="empty-message">No tasks yet. Add one to get started! ✨</div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="action-btn" onclick="clearCompleted()">Clear Completed</button>
+        <button class="action-btn danger" onclick="clearAll()">Clear All</button>
+    </div>
+</div>
+
+<script>
+let tasks = [];
+let currentFilter = 'all';
+
+// Load tasks from localStorage
+function loadTasks() {
+    const saved = localStorage.getItem('tasks');
+    tasks = saved ? JSON.parse(saved) : [];
+    renderTasks();
+    updateStats();
+}
+
+// Save tasks to localStorage
+function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Add new task
+function addTask() {
+    const input = document.getElementById('taskInput');
+    const priority = document.getElementById('prioritySelect').value;
+    const text = input.value.trim();
+
+    if (!text) {
+        alert('Please enter a task!');
+        return;
+    }
+
+    const task = {
+        id: Date.now(),
+        text: text,
+        priority: priority,
+        completed: false,
+        createdAt: new Date().toLocaleString()
+    };
+
+    tasks.push(task);
+    saveTasks();
+    renderTasks();
+    updateStats();
+
+    input.value = '';
+    input.focus();
+}
+
+// Toggle task completion
+function toggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+        task.completed = !task.completed;
+        saveTasks();
+        renderTasks();
+        updateStats();
+    }
+}
+
+// Delete task
+function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+// Clear completed tasks
+function clearCompleted() {
+    if (confirm('Delete all completed tasks?')) {
+        tasks = tasks.filter(t => !t.completed);
+        saveTasks();
+        renderTasks();
+        updateStats();
+    }
+}
+
+// Clear all tasks
+function clearAll() {
+    if (confirm('Delete ALL tasks? This cannot be undone!')) {
+        tasks = [];
+        saveTasks();
+        renderTasks();
+        updateStats();
+    }
+}
+
+// Filter tasks
+function filterTasks(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    renderTasks();
+}
+
+// Get priority emoji
+function getPriorityEmoji(priority) {
+    const emojis = {
+        'high': '🔴',
+        'medium': '🟠',
+        'low': '🟢'
+    };
+    return emojis[priority] || '🟠';
+}
+
+// Render tasks
+function renderTasks() {
+    const taskList = document.getElementById('taskList');
+    let filtered = tasks;
+
+    if (currentFilter === 'active') {
+        filtered = tasks.filter(t => !t.completed);
+    } else if (currentFilter === 'completed') {
+        filtered = tasks.filter(t => t.completed);
+    }
+
+    if (filtered.length === 0) {
+        taskList.innerHTML = '<div class="empty-message">No tasks to show ✨</div>';
+        return;
+    }
+
+    taskList.innerHTML = filtered.map(task => `
+        <div class="task-item ${task.completed ? 'completed' : ''}">
+            <input 
+                type="checkbox" 
+                class="task-checkbox" 
+                ${task.completed ? 'checked' : ''}
+                onchange="toggleTask(${task.id})"
+            >
+            <div class="task-content">
+                <div class="task-text">${task.text}</div>
+                <div class="task-meta">
+                    <span class="task-priority priority-${task.priority}">
+                        ${getPriorityEmoji(task.priority)} ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                    </span>
+                    &nbsp; • &nbsp;
+                    ${task.createdAt}
+                </div>
+            </div>
+            <button class="task-delete" onclick="deleteTask(${task.id})">Delete</button>
+        </div>
+    `).join('');
+}
+
+// Update statistics
+function updateStats() {
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    const remaining = total - completed;
+
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('completedCount').textContent = completed;
+    document.getElementById('remainingCount').textContent = remaining;
+}
+
+// Add task on Enter key
+document.getElementById('taskInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        addTask();
+    }
+});
+
+// Add task button
+document.getElementById('addBtn').addEventListener('click', addTask);
+
+// Initialize
+loadTasks();
+</script>
+
+</body>
+</html>
